@@ -6,7 +6,7 @@ Here you can find Meraki Dashboard API scripts written for Python 3.
 
 Files contained in this repository:
 
-**Installing Python on Windows.txt** General info for installing Python 3 on Windows
+**Installing Python on Windows.txt:** General info for installing Python 3 on Windows
 
 **copymxvlans.py:** This script can be used to export MX VLAN configuration of a source org to a file and import it to a destination org. The script will look for the exact same network names as they were in the source org. Use copynetworks.py and movedevices.py to migrate networks and devices if needed.
 
