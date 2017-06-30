@@ -6,12 +6,12 @@
 #  or install it using pip.
 #
 # To run the script, enter:
-#  python deployappliance.py -k <key> -o <org> -s <serial> -n <network name> -t <template>
+#  python deployappliance.py -k <key> -o <org> -s <sn> -n <netw> -c <cfg_tmpl> [-t <tags>] [-a <addr>] [-m ignore_error]
 #
 # To make script chaining easier, all lines containing informational messages to the user
 #  start with the character @
 #
-# This file was last modified on 2017-06-16
+# This file was last modified on 2017-06-30
 
 import sys, getopt, requests, json
 
@@ -28,17 +28,19 @@ def printhelp():
 	printusertext('the network to a pre-existing template.')
 	printusertext('')
 	printusertext('To run the script, enter:')
-	printusertext('python deployappliance.py -k <key> -o <org> -s <serial> -n <network name> -t <template> [-m ignore_error]')
+	printusertext('python deployappliance.py -k <key> -o <org> -s <sn> -n <netw> -c <cfg_tmpl> [-t <tags>] [-a <addr>] [-m ignore_error]')
 	printusertext('')
 	printusertext('<key>: Your Meraki Dashboard API key')
 	printusertext('<org>: Name of the Meraki Dashboard Organization to modify')
-	printusertext('<serial>: Serial number of the device to claim')
-	printusertext('<network name>: Name the new network will have')
-	printusertext('<template>: Name of the config template the new network will bound to')
+	printusertext('<sn>: Serial number of the device to claim')
+	printusertext('<netw>: Name the new network will have')
+	printusertext('<cfg_template>: Name of the config template the new network will bound to')
+	printusertext('-t <tags>: Optional parameter. If defined, network will be tagged with the given tags')
+	printusertext('-a <addr>: Optional parameter. If defined, device will be moved to given street address')
 	printusertext('-m ignore_error: Optional parameter. If defined, the script will not stop if network exists')
 	printusertext('')
 	printusertext('Example:')
-	printusertext('python deployappliance.py -k 1234 -o MyCustomer -s XXXX-YYYY-ZZZZ -n NewBranch -t MyCfgTemplate')
+	printusertext('python deployappliance.py -k 1234 -o MyCustomer -s XXXX-YYYY-ZZZZ -n NewBranch -c MyCfgTemplate')
 	printusertext('')
 	printusertext('Use double quotes ("") in Windows to pass arguments containing spaces. Names are case-sensitive.')
 	
@@ -158,6 +160,22 @@ def getdeviceinfo(p_apikey, p_shardurl, p_nwid, p_serial):
 	
 	return(rjson) 
 	
+def setdevicedata(p_apikey, p_shardurl, p_nwid, p_devserial, p_field, p_value, p_movemarker):
+	#modifies value of device record. Returns the new value
+	#on failure returns one device record, with all values 'null'
+	#p_movemarker is boolean: True/False
+	
+	movevalue = "false"
+	if p_movemarker:
+		movevalue = "true"
+	
+	r = requests.put('https://%s/api/v0/networks/%s/devices/%s' % (p_shardurl, p_nwid, p_devserial), data=json.dumps({p_field: p_value, 'moveMapMarker': movevalue}), headers={'X-Cisco-Meraki-API-Key': p_apikey, 'Content-Type': 'application/json'})
+			
+	if r.status_code != requests.codes.ok:
+		return ('null')
+	
+	return('ok')
+	
 def main(argv):
 	#set default values for command line arguments
 	arg_apikey = 'null'
@@ -166,11 +184,13 @@ def main(argv):
 	arg_nwname = 'null'
 	arg_template = 'null'
 	arg_modexisting = 'null'
+	arg_address = 'null'
+	arg_nwtags = 'null'
 		
 	#get command line arguments
-	#  python deployappliance.py -k <key> -o <org> -s <serial> -n <network name> -t <template>
+	#  python deployappliance.py -k <key> -o <org> -s <sn> -n <netw> -c <cfg_tmpl> [-t <tags>] [-a <addr>] [-m ignore_error]
 	try:
-		opts, args = getopt.getopt(argv, 'hk:o:s:n:t:m:')
+		opts, args = getopt.getopt(argv, 'hk:o:s:n:c:m:a:t:')
 	except getopt.GetoptError:
 		printhelp()
 		sys.exit(2)
@@ -187,10 +207,14 @@ def main(argv):
 			arg_serial = arg
 		elif opt == '-n':
 			arg_nwname = arg
-		elif opt == '-t':
+		elif opt == '-c':
 			arg_template = arg
 		elif opt == '-m':
 			arg_modexisting = arg
+		elif opt == '-a':
+			arg_address = arg
+		elif opt == '-t':
+			arg_nwtags = arg
 				
 	#check if all parameters are required parameters have been given
 	if arg_apikey == 'null' or arg_orgname == 'null' or arg_serial == 'null' or	arg_nwname == 'null' or arg_template == 'null':
@@ -228,7 +252,10 @@ def main(argv):
 			
 	#gather parameters to create network
 	#valid values for parameter 'type': 'wireless', 'switch', 'appliance', 'combined', 'wireless switch', etc
-	nwparams = {'name': arg_nwname, 'timeZone': 'Europe/Helsinki', 'tags': '', 'organizationId': orgid, 'type': 'appliance'}
+	nwtags = ''
+	if arg_nwtags != 'null':
+		nwtags = arg_nwtags
+	nwparams = {'name': arg_nwname, 'timeZone': 'Europe/Helsinki', 'tags': nwtags, 'organizationId': orgid, 'type': 'appliance'}
 	
 	#create network and get its ID
 	if nwid == 'null':
@@ -255,7 +282,15 @@ def main(argv):
 	if deviceinfo['serial'] == 'null':
 		printusertext('ERROR: Claiming or moving device unsuccessful')
 		sys.exit(2)
-		
+			
+	#set device hostname
+	hostname = deviceinfo['model'] + '_' + arg_serial
+	setdevicedata(arg_apikey, shardurl, nwid, arg_serial, 'name', hostname, False)
+	
+	#if street address is given as a parameter, set device location
+	if arg_address != 'null':
+		setdevicedata(arg_apikey, shardurl, nwid, arg_serial, 'address', arg_address, True)
+					
 	printusertext('End of script.')
 			
 if __name__ == '__main__':
