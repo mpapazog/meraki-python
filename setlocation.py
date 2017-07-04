@@ -53,21 +53,6 @@ def printhelp():
     printusertext('')
     printusertext('Use double quotes ("") in Windows to pass arguments containing spaces. Names are case-sensitive')
     
-def getgooglecoordinates(p_googlekey, p_address):
-    #looks up for the Geocoordinates of an address
-    # in the Google Geolocation API
-        
-    r = requests.get('https://maps.googleapis.com/maps/api/geocode/json?address=%s&key=%s' % (p_address, p_googlekey) )
-    
-    rjson = r.json()
-        
-    returnvalue = {}
-    if (r.status_code != requests.codes.ok) or (rjson['status'] != 'OK'):
-        returnvalue['status'] = 'null'
-        return(returnvalue)
-    
-    return(rjson)
-    
 def getorgid(p_apikey, p_orgname):
     #looks up org id for a specific org name
     #on failure returns 'null'
