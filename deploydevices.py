@@ -352,7 +352,7 @@ def main(argv):
     #clean up serials list to filter out licenses, MVs, etc
     validserials = []
     for i in range (0, len(devicelist['serial']) ):
-        if devicelist['model'][i] != 'null':
+        if devicelist['model'][i] == 'mr' or devicelist['model'][i] == 'ms' or devicelist['model'][i] == 'mx':
             validserials.append(devicelist['serial'][i])
     
     for devserial in validserials:
