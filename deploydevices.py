@@ -311,7 +311,7 @@ def main(argv):
     #compile list of different product types in order to create correct type of network
     devicetypes = {'mx': False, 'ms': False, 'mr': False}
     for record in devicelist['model']:
-        if record [:2] == 'MX' or record [:2] == 'Z1':
+        if record [:2] == 'MX' or record [:1] == 'Z':
             devicetypes['mx'] = True
         elif record [:2] == 'MS':
             devicetypes['ms'] = True
@@ -352,7 +352,7 @@ def main(argv):
     #clean up serials list to filter out licenses, MVs, etc
     validserials = []
     for i in range (0, len(devicelist['serial']) ):
-        if devicelist['model'][i][:2] == 'MR' or devicelist['model'][i][:2] == 'MS' or devicelist['model'][i][:2] == 'MX':
+        if devicelist['model'][i][:2] == 'MR' or devicelist['model'][i][:2] == 'MS' or devicelist['model'][i][:2] == 'MX' or devicelist['model'][i][:1] == 'Z':
             validserials.append(devicelist['serial'][i])
     
     for devserial in validserials:
