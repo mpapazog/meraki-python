@@ -8,8 +8,7 @@ The content is also posted in a repository of the official Meraki GitHub: https:
 
 In fact, please see that one for the most up to date versions of these scripts (and possibly more).
 
-
-Files contained in this repository:
+++Files contained in this repository:++
 
 **Installing Python on Windows.txt:** General info for installing Python 3 on Windows
 
