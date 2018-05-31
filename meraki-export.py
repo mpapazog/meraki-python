@@ -10,7 +10,7 @@ import yaml
 
 config={}
 config["Organization"]={}
-config["Organization"]["Network"]={}
+config["Organization"]["Network"]=[]
 def get_org_id(apikey,orgName,suppressprint):
     result = meraki.myorgaccess(apikey, suppressprint)
     for row in result:
@@ -46,12 +46,6 @@ def vpn_settings(apikey,networkid,suppressprint):
 
 def snmp_settings(apikey,orgid,suppressprint):
     mySNMP=meraki.getsnmpsettings(apikey, orgid, suppressprint)
-    if 'v2CommunityString' in mySNMP:
-        del mySNMP['v2CommunityString']
-    if 'hostname' in mySNMP:
-        del mySNMP['hostname']
-    if 'port' in mySNMP:
-        del mySNMP['port']
     config["Organization"]["SNMP"]=mySNMP
     print("Got SNMP settings")
 
@@ -74,7 +68,7 @@ def ssid_settings(apikey,networkid,suppressprint):
     for row in mySSIDs:
         myRules=meraki.getssidl3fwrules(apikey, networkid, row['number'], suppressprint)[0:-2]
         row["rules"]=myRules
-        network["SSID"][row["number"]]=row
+        network["SSID"].append(row)
         print("Got SSID "+str(row["number"]))
 ####################################################
 # Main program
@@ -114,9 +108,9 @@ for row in myNetworks:
     mx_l3_fw_rules(apikey,row['id'],suppressprint)
     vpn_settings(apikey,row['id'],suppressprint)
     static_routes(apikey,row["id"],suppressprint)
-    network["SSID"]={}
+    network["SSID"]=[]
     ssid_settings(apikey,row['id'],suppressprint)
-    config["Organization"]["Network"][row["id"]]=network
+    config["Organization"]["Network"].append(network)
 with open(file, 'w') as file:
     file.write("---\n")
     file.write(yaml.dump(config))
