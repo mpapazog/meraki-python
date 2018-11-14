@@ -138,7 +138,7 @@ def getInventory(p_org):
     try:
         r = requests.get('https://%s/api/v0/organizations/%s/inventory' % (p_org.shard, p_org.id), headers={'X-Cisco-Meraki-API-Key': ARG_APIKEY, 'Content-Type': 'application/json'}, timeout=(REQUESTS_CONNECT_TIMEOUT, REQUESTS_READ_TIMEOUT) )
     except:
-        print('WARNING XX: Unable to contact Meraki cloud')
+        print('ERROR 06: Unable to contact Meraki cloud')
         return(None)
     
     if r.status_code != requests.codes.ok:
@@ -155,7 +155,7 @@ def getNetworks(p_org):
     try:
         r = requests.get('https://%s/api/v0/organizations/%s/networks' % (p_org.shard, p_org.id), headers={'X-Cisco-Meraki-API-Key': ARG_APIKEY, 'Content-Type': 'application/json'}, timeout=(REQUESTS_CONNECT_TIMEOUT, REQUESTS_READ_TIMEOUT) )
     except:
-        print('WARNING XX: Unable to contact Meraki cloud')
+        print('ERROR 07: Unable to contact Meraki cloud')
         return(None)
     
     if r.status_code != requests.codes.ok:
@@ -207,7 +207,7 @@ def getShardHost(p_org):
     try:
         r = requests.get('https://api.meraki.com/api/v0/organizations/%s/snmp' % p_org.id, headers={'X-Cisco-Meraki-API-Key': ARG_APIKEY, 'Content-Type': 'application/json'}, timeout=(REQUESTS_CONNECT_TIMEOUT, REQUESTS_READ_TIMEOUT) )
     except:
-        print('WARNING: Unable to contact Meraki cloud')
+        print('ERROR 08: Unable to contact Meraki cloud')
         return None
     
     if r.status_code != requests.codes.ok:
