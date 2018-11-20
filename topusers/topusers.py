@@ -32,7 +32,7 @@
 #  and "key.pem" files as a self-signed certificate using OpenSSL:
 #  https://stackoverflow.com/questions/10175812/how-to-create-a-self-signed-certificate-with-openssl
 #
-# Last modified on 2018-11-14 by Mihail Papazoglou
+# Last modified on 2018-11-20 by Mihail Papazoglou
 
 import sys, getopt, requests, json, time, datetime, os, sqlite3
 from flask import Flask, jsonify, render_template, request
