@@ -79,6 +79,7 @@ class c_Output:
         short       = []
         mid         = []
         long        = []
+        timestamp   = ''
         
 class c_Net:
     def __init__(self):
@@ -398,6 +399,7 @@ def index():
         output.short    = getUsageReport(netparams, TIMERANGE_SHORT_MINUTES)
         output.mid      = getUsageReport(netparams, TIMERANGE_MEDIUM_MINUTES)
         output.long     = getUsageReport(netparams, TIMERANGE_LONG_MINUTES)
+        output.timestamp= str(datetime.datetime.now())
         
     return render_template('index.html', form=form, tshort=TIMERANGE_SHORT_MINUTES, tmid=TIMERANGE_MEDIUM_MINUTES, tlong=TIMERANGE_LONG_MINUTES, output=output)
 
