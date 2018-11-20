@@ -337,18 +337,17 @@ def getUsageReport(p_netparams, p_minutes):
     db.commit()
     
     for cl in clientlists:
-        for client in cl:
-            values  = str(client['usage']['sent']) + ","
-            values += str(client['usage']['recv']) + ","
-            values += str(client['usage']['sent']  + client['usage']['recv']) + ",'"
-            values += str(client['id'])            + "','"
-            values += str(client['description'])   + "','"
-            values += str(client['dhcpHostname'])  + "','"
-            values += str(client['mac'])           + "','"
-            values += str(client['ip'])            + "','"
-            values += str(client['vlan'])          + "'"
-            
-            dbcursor.execute('''INSERT INTO clients VALUES (''' + values + ''')''')
+        for client in cl:            
+            dbcursor.execute('''INSERT INTO clients VALUES (?,?,?,?,?,?,?,?,?)''', 
+                (client['usage']['sent'],
+                client['usage']['recv'],
+                client['usage']['sent']  + client['usage']['recv'],
+                client['id'],
+                client['description'],
+                client['dhcpHostname'],
+                client['mac'],
+                client['ip'],
+                client['vlan']))
             
     db.commit()
     
