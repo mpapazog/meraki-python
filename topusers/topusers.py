@@ -28,11 +28,13 @@
 #  pip install flask
 #  pip install flask-wtf
 #
+# Depending on your operating system, the command can be "pip3" instead of "pip".
+#
 # To run the server in HTTPS mode, you will need a certificate. Here is how to create the needed "cert.pem" 
 #  and "key.pem" files as a self-signed certificate using OpenSSL:
 #  https://stackoverflow.com/questions/10175812/how-to-create-a-self-signed-certificate-with-openssl
 #
-# Last modified on 2018-11-20 by Mihail Papazoglou
+# Last modified on 2018-11-21 by Mihail Papazoglou
 
 import sys, getopt, requests, json, time, datetime, os, sqlite3
 from flask import Flask, jsonify, render_template, request
