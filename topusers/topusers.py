@@ -296,7 +296,8 @@ def refreshOrgList2():
 
     
 def getclientlist(p_shardhost, p_serial, p_timespan):
-    #get client list for a network device from Dashboard. No artificial delay
+    
+    merakirequestthrottler()
     try:
         r = requests.get('https://%s/api/v0/devices/%s/clients?timespan=%s' % (p_shardhost, p_serial, p_timespan), headers={'X-Cisco-Meraki-API-Key': ARG_APIKEY, 'Content-Type': 'application/json'}, timeout=(REQUESTS_CONNECT_TIMEOUT, REQUESTS_READ_TIMEOUT) )
     except:
