@@ -34,10 +34,10 @@
 #  and "key.pem" files as a self-signed certificate using OpenSSL:
 #  https://stackoverflow.com/questions/10175812/how-to-create-a-self-signed-certificate-with-openssl
 #
-# Last modified on 2018-11-21 by Mihail Papazoglou
+# Last modified on 2018-11-24 by Mihail Papazoglou
 
 import sys, getopt, requests, json, time, datetime, os, sqlite3
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, redirect, url_for, flash
 from flask_wtf import FlaskForm
 from wtforms import SelectField, SubmitField
 
@@ -52,7 +52,7 @@ REQUESTS_READ_TIMEOUT       = 90
 SERVER_HTTP_PORT            = '80'  #modify this to set TCP port used in HTTP mode
 SERVER_HTTPS_PORT           = '443' #modify this to set TCP port used in HTTPS mode
 
-ORGLIST_STALE_MINUTES       = 1440 #how often to refresh the Org list to check for added networks and MXs
+ORGLIST_STALE_MINUTES       = 30 #minimum time between scanning for new MXs in minutes. Used by refreshOrgList2()
 
 #Time range definitions. Run reports for these intervals
 TIMERANGE_SHORT_MINUTES     = 10
@@ -291,8 +291,9 @@ def refreshOrgList2():
                     
         LAST_ORGLIST_REFRESH = datetime.datetime.now()      
         print('INFO: Refresh complete at %s' % LAST_ORGLIST_REFRESH)
+        return('Scan complete')
                      
-    return None
+    return ('Scan skipped. You can rescan maximum once per %i minutes' % ORGLIST_STALE_MINUTES)
 
     
 def getclientlist(p_shardhost, p_serial, p_timespan):
@@ -370,7 +371,6 @@ def getUsageReport(p_netparams, p_minutes):
         
     db.close()
     
-
     return(retvalue)
     
 
@@ -405,6 +405,12 @@ def index():
         output.timestamp= str(datetime.datetime.now())
         
     return render_template('index.html', form=form, tshort=TIMERANGE_SHORT_MINUTES, tmid=TIMERANGE_MEDIUM_MINUTES, tlong=TIMERANGE_LONG_MINUTES, output=output)
+    
+@app.route("/rescan/", methods=['GET'])
+def rescan():
+    flashmsg = refreshOrgList2()
+    flash(flashmsg)
+    return redirect(url_for('index'))
 
     
 #SECTION: main
