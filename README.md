@@ -4,9 +4,7 @@ Meraki Dashboard API scripts in Python
 
 Here you can find Meraki Dashboard API scripts written for Python 3.
 
-The content is also posted in a repository of the official Meraki GitHub: https://github.com/meraki/automation-scripts
-
-In fact, please see that one for the most up to date versions of these scripts (and possibly more).
+Also have a look at the official Meraki GitHub for more content and updated versions of my older scripts: https://github.com/meraki/automation-scripts
 
 Files contained in this repository:
 -----------------------------------
