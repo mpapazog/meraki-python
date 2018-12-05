@@ -352,7 +352,7 @@ def main(argv):
     
     retvalue = dbcursor.fetchall()
     
-    print ('\nTotal unique client MAC addresses accross all WLAN APs: %s\n' % len(retvalue))    
+    print ('\nTotal unique client MAC addresses across all WLAN APs: %s\n' % len(retvalue))    
     
     #List unique MAC addresses
     #for line in retvalue:
