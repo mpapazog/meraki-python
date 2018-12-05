@@ -356,7 +356,9 @@ def main(argv):
     
     #List unique MAC addresses
     #for line in retvalue:
-    #    print (line[0])     
+    #    print (line[0])   
+    
+    db.close()
     
 if __name__ == '__main__':
     main(sys.argv[1:])
