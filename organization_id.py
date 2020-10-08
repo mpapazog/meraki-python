@@ -1,7 +1,7 @@
 read_me = '''This is a Python 3 script to print your organizationId for a given name. Usage
 '''
 
-import sys, getopt, requests, json, paramiko, re, time, datetime
+import sys, getopt, requests, time, datetime
 
 #SECTION: GLOBAL VARIABLES: MODIFY TO CHANGE SCRIPT BEHAVIOUR
 
