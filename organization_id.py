@@ -1,4 +1,5 @@
-read_me = '''This is a Python 3 script to print your organizationId for a given name. Usage
+read_me = '''This is a Python 3 script to print your organizationId for a given name. Usage:
+    python organization_id.py -k <your API key> -o <organization name>
 '''
 
 import sys, getopt, requests, time, datetime
