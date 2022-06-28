@@ -11,6 +11,8 @@ Files contained in this repository:
 
 **Installing Python on Windows.txt:** General info for installing Python 3 on Windows
 
+**AddStaticRoute.py:** This simple script reads a list of static routes from a YAML file and adds them to a Network. 
+
 **copymxvlans.py:** This script can be used to export MX VLAN configuration of a source org to a file and import it to a destination org. The script will look for the exact same network names as they were in the source org. Use copynetworks.py and movedevices.py to migrate networks and devices if needed.
 
 **copynetworks.py:** Copies networks and their base attributes from one organization to another. Does not move devices over or copy individual device configuration. Combined networks will be copied as "wireless switch appliance".
